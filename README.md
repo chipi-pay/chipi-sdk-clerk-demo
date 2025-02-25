@@ -48,3 +48,4 @@ cp .env.example .env
 ```bash
 npm run dev
 ```
+# chipi-sdk-clerk-demo
