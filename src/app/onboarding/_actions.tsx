@@ -2,26 +2,35 @@
 
 import { auth, clerkClient } from '@clerk/nextjs/server'
 
-export const completeOnboarding = async (formData: FormData) => {
-  const { userId } = await auth()
+interface WalletData {
+  publicKey: string;
+  encryptedPrivateKey: string;
+}
 
-  if (!userId) {
-    return { message: 'No Logged In User' }
-  }
-
-  const client = await clerkClient()
-
+export const completeOnboarding = async (walletData: WalletData) => {
   try {
+    const { userId } = await auth()
+    console.log('Server: Processing for userId:', userId);
+
+    if (!userId) {
+      return { error: 'No Logged In User' }
+    }
+
+    const client = await clerkClient()
+    console.log('Server: Updating user metadata with:', walletData);
+
     const res = await client.users.updateUser(userId, {
       publicMetadata: {
-        onboardingComplete: true,
-        applicationName: formData.get('applicationName'),
-        applicationType: formData.get('applicationType'),
+        walletCreated: true,
+        publicKey: walletData.publicKey,
+        encryptedPrivateKey: walletData.encryptedPrivateKey,
       },
     })
-    return { message: res.publicMetadata }
+
+    console.log('Server: Update successful:', res.publicMetadata);
+    return { success: true, metadata: res.publicMetadata }
   } catch (err) {
-    console.error(err)
-    return { error: 'There was an error updating the user metadata.' }
+    console.error('Server: Error in completeOnboarding:', err)
+    return { error: err instanceof Error ? err.message : 'There was an error updating the user metadata.' }
   }
 }

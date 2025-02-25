@@ -11,9 +11,9 @@ export default clerkMiddleware(async (auth, req) => {
     return redirectToSignIn({ returnBackUrl: req.url });
   }
 
-  // Catch users who do not have `onboardingComplete: true` in their publicMetadata
+  // Catch users who do not have `walletCreated: true` in their publicMetadata
   // Redirect them to the /onboading route to complete onboarding
-  if (userId && !sessionClaims?.metadata?.onboardingComplete && req.nextUrl.pathname !== "/onboarding") {
+  if (userId && !sessionClaims?.metadata?.walletCreated && req.nextUrl.pathname !== "/onboarding") {
     const onboardingUrl = new URL("/onboarding", req.url);
     return NextResponse.redirect(onboardingUrl);
   }

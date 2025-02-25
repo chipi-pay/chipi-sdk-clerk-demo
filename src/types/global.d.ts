@@ -3,9 +3,9 @@ export { };
 declare global {
   interface CustomJwtSessionClaims {
     metadata: {
-      onboardingComplete?: boolean;
-      applicationName?: string;
-      applicationType?: string;
+      walletCreated?: boolean;
+      publicKey?: string;
+      encryptedPrivateKey?: string;
     };
     firstName?: string;
   }

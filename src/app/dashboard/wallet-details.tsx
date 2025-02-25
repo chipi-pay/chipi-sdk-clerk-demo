@@ -13,19 +13,35 @@ export async function WalletDetails() {
           <div className="px-8 py-2">
             <dt className="text-sm font-semibold">Wallet Deployed?</dt>
             <dd className="mt-1 text-sm text-gray-600 sm:mt-0 sm:col-span-2 flex gap-2">
-              {sessionClaims?.metadata.onboardingComplete ? "Yes" : "No"}
+              {sessionClaims?.metadata.walletCreated ? "Yes" : "No"}
             </dd>
           </div>
           <div className="px-8 py-2">
             <dt className="text-sm font-semibold">Public Key</dt>
             <dd className="mt-1 text-sm text-gray-600 sm:mt-0 sm:col-span-2 flex gap-2">
-              {sessionClaims?.metadata.applicationName}
+              {sessionClaims?.metadata.publicKey ? (
+                <>
+                  {`${sessionClaims.metadata.publicKey.slice(0, 4)}...${sessionClaims.metadata.publicKey.slice(-6)}`}
+                  <a
+                    href={`https://starkscan.co/contract/${sessionClaims.metadata.publicKey}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </>
+              ) : null}
             </dd>
           </div>
           <div className="px-8 py-2">
             <dt className="text-sm font-semibold">Encrypted Private Key</dt>
             <dd className="mt-1 text-sm text-gray-600 sm:mt-0 sm:col-span-2 flex gap-2">
-              {sessionClaims?.metadata.applicationType}
+              {sessionClaims?.metadata.encryptedPrivateKey ? 
+                `${sessionClaims.metadata.encryptedPrivateKey.slice(0, 4)}...${sessionClaims.metadata.encryptedPrivateKey.slice(-6)}`
+              : null}
             </dd>
           </div>
         </dl>
