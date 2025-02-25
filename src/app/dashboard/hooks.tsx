@@ -8,10 +8,9 @@ import {
 import { useState, useEffect } from "react";
 import { getWalletData } from "./_actions";
 
-const walletData = {
-  publicKey: "0x3d2616c9005a03be3391fde674bb453a999b8d7892a9e37acb5de4cf888c8e3",
-  encryptedPrivateKey: "U2FsdGVkX1/oLoOZLWPhj7E3cfh8pEVcEcu8aFN/UM3gOKv+pdBmqq26qS2vE7BSMS17a2PUD+3WWPQzfXQJcllSKZk9G8N5XldtccvUJDQHLbvXWk4lqjpzbdFt0Lgr",
-};
+// Smart Contract Addresses
+const VESU_CONTRACT = "0x037ae3f583c8d644b7556c93a04b83b52fa96159b2b0cbd83c14d3122aef80a2";  // VESU Token Contract
+const STRK_CONTRACT = "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";  // STRK Token Contract
 
 export function Transfer() {
   const { transferAsync, transferData } = useTransfer();
@@ -49,7 +48,7 @@ export function Transfer() {
           publicKey: walletData.publicKey,
           encryptedPrivateKey: walletData.privateKey
         },
-        contractAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+        contractAddress: STRK_CONTRACT,
         recipient: formData.recipient,
         amount: formData.amount,
         decimals: 18,
@@ -143,12 +142,12 @@ export function Transfer() {
 }
 
 export function Stake() {
-  const { stakeAsync } = useStake();
+  const { stakeAsync, stakeData } = useStake();
   const [walletData, setWalletData] = useState<{ publicKey: string; privateKey: string } | null>(null);
   const [formData, setFormData] = useState({
     pin: '',
     amount: '',
-    contractAddress: '0x037ae3f583c8d644b7556c93a04b83b52fa96159b2b0cbd83c14d3122aef80a2'
+    contractAddress: VESU_CONTRACT
   });
 
   useEffect(() => {
@@ -173,7 +172,7 @@ export function Stake() {
 
     try {
       const response = await stakeAsync({
-        encryptKey: formData.pin,
+        encryptKey: String(formData.pin),
         wallet: {
           publicKey: walletData.publicKey,
           encryptedPrivateKey: walletData.privateKey
@@ -183,15 +182,16 @@ export function Stake() {
         amount: formData.amount,
         decimals: 18,
       });
-      console.log("stake response", response);
+      console.log("Stake response:", response);
       alert("Stake successful");
     } catch (error: unknown) {
+      console.error("Stake error:", error);
       alert("Stake failed: " + (error instanceof Error ? error.message : "Unknown error"));
     }
   };
 
   return (
-    <div className="bg-white shadow overflow-hidden sm:rounded-lg" style={{ boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)` }}>
+    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="flex p-8">
         <h3 className="text-xl leading-6 font-semibold text-gray-900 my-auto">Stake Tokens</h3>
       </div>
@@ -205,6 +205,15 @@ export function Stake() {
               onChange={(e) => setFormData({...formData, pin: e.target.value})}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">VESU Contract Address</label>
+            <input
+              type="text"
+              value={VESU_CONTRACT}
+              className="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed"
+              disabled
             />
           </div>
           <div>
@@ -224,40 +233,84 @@ export function Stake() {
             Stake
           </button>
         </form>
+        {stakeData && (
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-sm font-medium text-gray-900">Transaction Details</h4>
+              <a 
+                href={`https://starkscan.co/tx/${stakeData}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+              >
+                <span className="text-sm">View on Starkscan</span>
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+            <pre className="whitespace-pre-wrap overflow-auto bg-gray-100 p-3 rounded-md text-xs">
+              {stakeData}
+            </pre>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 export function Approve() {
-  const { approveAsync } = useApprove();
+  const { approveAsync, approveData } = useApprove();
+  const [walletData, setWalletData] = useState<{ publicKey: string; privateKey: string } | null>(null);
   const [formData, setFormData] = useState({
     pin: '',
-    spender: '',
+    spender: VESU_CONTRACT,
     amount: '',
-    contractAddress: '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d'
+    contractAddress: STRK_CONTRACT
   });
+
+  useEffect(() => {
+    const fetchWalletData = async () => {
+      const data = await getWalletData();
+      if (data.publicKey && data.privateKey) {
+        setWalletData({
+          publicKey: data.publicKey,
+          privateKey: data.privateKey
+        });
+      }
+    };
+    fetchWalletData();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!walletData) {
+      alert("Wallet data not loaded");
+      return;
+    }
+
     try {
       const response = await approveAsync({
-        encryptKey: formData.pin,
-        wallet: walletData,
+        encryptKey: String(formData.pin),
+        wallet: {
+          publicKey: walletData.publicKey,
+          encryptedPrivateKey: walletData.privateKey
+        },
         contractAddress: formData.contractAddress,
         spender: formData.spender,
         amount: formData.amount,
         decimals: 18,
       });
-      console.log("approve response", response);
+      console.log("Approve response:", response);
       alert("Approval successful");
-    } catch (error) {
-      alert("Approval failed: " + error);
+    } catch (error: unknown) {
+      console.error("Approve error:", error);
+      alert("Approval failed: " + (error instanceof Error ? error.message : "Unknown error"));
     }
   };
 
   return (
-    <div className="bg-white shadow overflow-hidden sm:rounded-lg" style={{ boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)` }}>
+    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="flex p-8">
         <h3 className="text-xl leading-6 font-semibold text-gray-900 my-auto">Approve Tokens</h3>
       </div>
@@ -274,13 +327,12 @@ export function Approve() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Spender Address</label>
+            <label className="block text-sm font-medium text-gray-700">Spender VESU address</label>
             <input
               type="text"
-              value={formData.spender}
-              onChange={(e) => setFormData({...formData, spender: e.target.value})}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              required
+              value={VESU_CONTRACT}
+              className="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed"
+              disabled
             />
           </div>
           <div>
@@ -300,6 +352,27 @@ export function Approve() {
             Approve
           </button>
         </form>
+        {approveData && (
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-sm font-medium text-gray-900">Transaction Details</h4>
+              <a 
+                href={`https://starkscan.co/tx/${approveData}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+              >
+                <span className="text-sm">View on Starkscan</span>
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+            <pre className="whitespace-pre-wrap overflow-auto bg-gray-100 p-3 rounded-md text-xs">
+              {approveData}
+            </pre>
+          </div>
+        )}
       </div>
     </div>
   );
