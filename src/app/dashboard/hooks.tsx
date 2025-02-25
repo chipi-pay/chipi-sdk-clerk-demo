@@ -52,7 +52,7 @@ export function Transfer() {
         contractAddress: USDC_CONTRACT,
         recipient: formData.recipient,
         amount: formData.amount,
-        decimals: 18,
+        decimals: 6,
       });
       console.log("Transfer response:", response);
       alert("Transfer successful");
