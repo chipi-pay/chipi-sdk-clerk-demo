@@ -8,6 +8,7 @@ import { Inter } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
+import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider signInFallbackRedirectUrl="/dashboard" signUpFallbackRedirectUrl="/dashboard" afterSignOutUrl="/" >
+        <Providers>
         <body className={`${inter.className} min-h-screen flex flex-col`}>
 
           <header className="flex items-center h-20 gap-4 px-4 border-b border-black border-solid sm:px-8 border-opacity-20">
@@ -84,6 +86,7 @@ export default function RootLayout({
             </nav>
           </footer>
         </body>
+        </Providers>
       </ClerkProvider>
 
     </html>

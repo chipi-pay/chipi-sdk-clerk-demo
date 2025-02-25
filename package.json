@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chipi-pay/chipi-sdk": "^2.0.1",
     "@clerk/nextjs": "^6.12.0",
     "next": "15.1.7",
     "react": "^19.0.0",

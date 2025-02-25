@@ -17,7 +17,6 @@ export default async function Dashboard() {
              <UserDetails />
             <SessionDetails />
             <WalletDetails /> 
-            hola
           </div>
         </>
       )}
