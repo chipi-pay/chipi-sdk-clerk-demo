@@ -9,7 +9,7 @@ export default function Home() {
             User Onboarding starts here.
           </h1>
           <p className="mt-2 text-lg">
-            Create invisible wallets and sponsor transactions with Chipi-SDK and Clerk
+            A simple sample app featuring an onboarding flow powered by Clerk.
           </p>
 
           <SignedIn>
