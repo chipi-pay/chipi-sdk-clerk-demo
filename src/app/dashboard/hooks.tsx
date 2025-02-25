@@ -11,6 +11,7 @@ import { getWalletData } from "./_actions";
 // Smart Contract Addresses
 const VESU_CONTRACT = "0x037ae3f583c8d644b7556c93a04b83b52fa96159b2b0cbd83c14d3122aef80a2";  // VESU Token Contract
 const STRK_CONTRACT = "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";  // STRK Token Contract
+const USDC_CONTRACT = "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8";  // USDC Token Contract
 
 export function Transfer() {
   const { transferAsync, transferData } = useTransfer();
@@ -48,7 +49,7 @@ export function Transfer() {
           publicKey: walletData.publicKey,
           encryptedPrivateKey: walletData.privateKey
         },
-        contractAddress: STRK_CONTRACT,
+        contractAddress: USDC_CONTRACT,
         recipient: formData.recipient,
         amount: formData.amount,
         decimals: 18,
@@ -64,7 +65,7 @@ export function Transfer() {
   return (
     <div className="bg-white overflow-hidden rounded-lg shadow">
       <div className="flex justify-between items-center p-8">
-        <h3 className="text-xl font-semibold text-gray-900">Transfer Tokens</h3>
+        <h3 className="text-xl font-semibold text-gray-900">Transfer USDC</h3>
       </div>
       <div className="pb-6 px-8">
         <form onSubmit={handleSubmit} className="space-y-4">
