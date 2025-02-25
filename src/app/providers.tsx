@@ -2,8 +2,8 @@
 import { ChipiProvider } from "@chipi-pay/chipi-sdk";
 
 //
-// const AVNU_API_KEY = process.env.NEXT_PUBLIC_AVNU_API_KEY!;
-const AVNU_API_KEY = '98564df8-122b-4708-a2d2-ea6c93b85d46';
+const AVNU_API_KEY = process.env.NEXT_PUBLIC_AVNU_API_KEY!;
+
 if (!AVNU_API_KEY) {
   throw new Error("AVNU_API_KEY is not set");
 }
