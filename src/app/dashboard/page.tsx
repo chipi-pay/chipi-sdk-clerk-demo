@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { SessionDetails, UserDetails } from "./details";
 import { WalletDetails } from "./wallet-details";
+import { Transfer, Approve, Stake } from "./hooks";
 
 export default async function Dashboard() {
   const { userId, sessionClaims } = await auth()
@@ -14,9 +15,14 @@ export default async function Dashboard() {
 
           </h1>
           <div className="grid gap-4 mt-8 lg:grid-cols-3">
-             <UserDetails />
+            <UserDetails />
             <SessionDetails />
             <WalletDetails /> 
+          </div>
+          <div className="grid gap-4 mt-8 lg:grid-cols-3">
+            <Transfer />
+            <Approve />
+            <Stake />
           </div>
         </>
       )}
