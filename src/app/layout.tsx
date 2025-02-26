@@ -53,7 +53,7 @@ export default function RootLayout({
           <footer className="flex items-center h-20 gap-1 px-8 font-medium border-t md:px-20">
             <a
               className="flex gap-2 px-3 py-2 text-m font-semibold text-gray-600 transition duration-100 rounded-md hover:text-gray-800"
-              href="https://github.com/chipi-pay/chipi-sdk-clerk-example"
+              href="https://github.com/chipi-pay/chipi-sdk-clerk-demo"
             >
               <span className="hidden sm:inline">View the Github Repo for this Chipi-SDK + Clerk example</span>
             </a>
