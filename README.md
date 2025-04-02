@@ -1,4 +1,4 @@
-# 🌟 STRK Staking dApp with Chipi SDK
+# 🌟 Invisible wallets and actions with Chipi SDK
 
 <p align="center">
   <img src="./public/chipi-chunky.png" alt="Chipi Pay Logo" width="300" height="auto"/>
